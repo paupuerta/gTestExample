@@ -34,8 +34,53 @@ endif()
 
 include(CTest)
 
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/CMakeModules)
+INCLUDE (qtMake)
+
+SET (QT_QMAKE_EXECUTABLE /home/pcarmona/apps/Qt-4.8.6/bin/qmake )
+#SET (QT_MOC_EXECUTABLE   /home/pcarmona/apps/Qt-4.8.6/bin/moc )
+#SET (QT_UI_EXECUTABLE    /home/pcarmona/apps/Qt-4.8.6/bin/uic )
+#SET (QT_QRC_EXECUTABLE   /home/pcarmona/apps/Qt-4.8.6/bin/rcc )
+SET(CMAKE_INCLUDE_PATH "/home/pcarmona/apps/Qt-4.8.6/bin")
+FIND_PACKAGE(Qt4 4.8.6 REQUIRED QtCore QtNetwork QtTest)
+include(${QT_USE_FILE})
+
+#set (SRC src/TestRunner.cpp)
+#set (SRC_H_MOC src/TestRunner.h src/testClntWebSrv.cpp)
+set (SRC src/example.cpp)
+set (SRC_H_MOC src/example.h)
+set (SRC_MOC_GEN "src/autogen")
+
+IF (NOT EXISTS ${SRC_MOC_GEN})
+   execute_process (COMMAND mkdir -p ${SRC_MOC_GEN})
+ENDIF()
+
+gen_moc (TEST_MOC
+        ${SRC_MOC_GEN}
+        ${SRC_H_MOC})
+
+
+
 # Now simply link against gtest or gtest_main as needed. Eg
-add_executable(example example.cpp)
-target_link_libraries(example gtest_main)
-target_link_libraries(example gtest gmock)
+add_executable(example_test test/main.cpp ${TEST_MOC} ${SRC})
+target_link_libraries(example_test gtest_main)
+target_link_libraries(example_test gtest gmock)
+target_link_libraries(example_test ${QT_LIBRARIES})
+
 add_test(NAME example_test COMMAND example)
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+    include(CodeCoverage)
+    APPEND_COVERAGE_COMPILER_FLAGS()
+    set(COVERAGE_EXCLUDES 'gmock/*')
+    set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
+    #setup_target_for_coverage(${PROJECT_NAME}_coverage ${PROJECT_TEST_NAME} coverage)
+    SETUP_TARGET_FOR_COVERAGE(
+       NAME example_coverage
+       EXECUTABLE example_test
+       DEPENDENCIES example_test)
+    #     NAME testrunner_coverage                    # New target name
+    #     EXECUTABLE testrunner -j ${PROCESSOR_COUNT} # Executable in PROJECT_BINARY_DIR
+    #     DEPENDENCIES testrunner                     # Dependencies to build first
+
+endif()
