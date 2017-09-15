@@ -72,10 +72,12 @@ add_test(NAME example_test COMMAND example)
 if(CMAKE_COMPILER_IS_GNUCXX)
     include(CodeCoverage)
     APPEND_COVERAGE_COMPILER_FLAGS()
-    set(COVERAGE_EXCLUDES 'gmock/*')
+    set(COVERAGE_EXCLUDES '*/googletest-src/*' '*/googletest/*' '*/googlemock/*'
+       '*/usr/*' '*/apps/*' '*/build/*')
     set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
     #setup_target_for_coverage(${PROJECT_NAME}_coverage ${PROJECT_TEST_NAME} coverage)
     SETUP_TARGET_FOR_COVERAGE(
+       #SETUP_TARGET_FOR_COVERAGE_COBERTURA(
        NAME example_coverage
        EXECUTABLE example_test
        DEPENDENCIES example_test)
