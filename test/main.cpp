@@ -61,7 +61,6 @@ TEST(TeaBreakTest, EmitsEvent)
     ASSERT_EQ(1, spy.count());
 }
 
-
 int main(int argc, char *argv[])
 {
     testing::InitGoogleTest(&argc, argv);

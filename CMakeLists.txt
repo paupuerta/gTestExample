@@ -45,8 +45,6 @@ SET(CMAKE_INCLUDE_PATH "/home/pcarmona/apps/Qt-4.8.6/bin")
 FIND_PACKAGE(Qt4 4.8.6 REQUIRED QtCore QtNetwork QtTest)
 include(${QT_USE_FILE})
 
-#set (SRC src/TestRunner.cpp)
-#set (SRC_H_MOC src/TestRunner.h src/testClntWebSrv.cpp)
 set (SRC src/example.cpp)
 set (SRC_H_MOC src/example.h)
 set (SRC_MOC_GEN "src/autogen")
@@ -59,8 +57,6 @@ gen_moc (TEST_MOC
         ${SRC_MOC_GEN}
         ${SRC_H_MOC})
 
-
-
 # Now simply link against gtest or gtest_main as needed. Eg
 add_executable(example_test test/main.cpp ${TEST_MOC} ${SRC})
 target_link_libraries(example_test gtest_main)
@@ -72,8 +68,7 @@ add_test(NAME example_test COMMAND example)
 if(CMAKE_COMPILER_IS_GNUCXX)
     include(CodeCoverage)
     APPEND_COVERAGE_COMPILER_FLAGS()
-    set(COVERAGE_EXCLUDES '*/googletest-src/*' '*/googletest/*' '*/googlemock/*'
-       '*/usr/*' '*/apps/*' '*/build/*')
+    set(COVERAGE_EXCLUDES '*/googletest-src/*' '*/usr/*' '*/apps/*' '*/build/*')
     set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
     #setup_target_for_coverage(${PROJECT_NAME}_coverage ${PROJECT_TEST_NAME} coverage)
     SETUP_TARGET_FOR_COVERAGE(

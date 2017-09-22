@@ -206,17 +206,20 @@ function(SETUP_TARGET_FOR_COVERAGE_COBERTURA)
         set(COBERTURA_EXCLUDES "-e ${EXCLUDE} ${COBERTURA_EXCLUDES}")
     endforeach()
 
+    MESSAGE (${COBERTURA_EXCLUDES})
     add_custom_target(${Coverage_NAME}
 
         # Run tests
         ${Coverage_EXECUTABLE}
 
         # Running gcovr
-        COMMAND ${GCOVR_PATH} -x -r ${CMAKE_SOURCE_DIR} ${COBERTURA_EXCLUDES}
-            -o ${Coverage_NAME}.xml
+        #COMMAND ${GCOVR_PATH} -x -r ${CMAKE_SOURCE_DIR} ${COBERTURA_EXCLUDES} -o ${Coverage_NAME}.xml
+        #COMMAND ${GCOVR_PATH} -r ${CMAKE_SOURCE_DIR} ${COBERTURA_EXCLUDES} 
+        COMMAND ${GCOVR_PATH} -r ${CMAKE_SOURCE_DIR} -e "build/*"
+        #-f '*example*'
         WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
         DEPENDS ${Coverage_DEPENDENCIES}
-        COMMENT "Running gcovr to produce Cobertura code coverage report."
+        COMMENT "Running gcovr to produce Cobertura code coverage report.  ${CMAKE_SOURCE_DIR}"
     )
 
     # Show info where to find the report
