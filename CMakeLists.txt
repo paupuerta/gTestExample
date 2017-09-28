@@ -2,15 +2,20 @@ cmake_minimum_required(VERSION 2.8.2)
 
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
+
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
   RESULT_VARIABLE result
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
+
 if(result)
   message(FATAL_ERROR "CMake step for googletest failed: ${result}")
 endif()
+
+
 execute_process(COMMAND ${CMAKE_COMMAND} --build .
   RESULT_VARIABLE result
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download )
+
 if(result)
   message(FATAL_ERROR "Build step for googletest failed: ${result}")
 endif()
@@ -45,8 +50,13 @@ SET(CMAKE_INCLUDE_PATH "/home/pcarmona/apps/Qt-4.8.6/bin")
 FIND_PACKAGE(Qt4 4.8.6 REQUIRED QtCore QtNetwork QtTest)
 include(${QT_USE_FILE})
 
-set (SRC src/example.cpp)
-set (SRC_H_MOC src/example.h)
+set (SRC src/TeaBreak.cpp)
+set (SRC_H_MOC src/TeaBreak.h)
+set (SRC_TESTS
+   test/TeaBreakTest.cpp
+   test/SimpleTest.cpp
+   test/QStringTest.cpp)
+
 set (SRC_MOC_GEN "src/autogen")
 
 IF (NOT EXISTS ${SRC_MOC_GEN})
@@ -58,10 +68,26 @@ gen_moc (TEST_MOC
         ${SRC_H_MOC})
 
 # Now simply link against gtest or gtest_main as needed. Eg
-add_executable(example_test test/main.cpp ${TEST_MOC} ${SRC})
+add_executable(example_test test/main.cpp ${SRC_TESTS} ${TEST_MOC} ${SRC})
 target_link_libraries(example_test gtest_main)
 target_link_libraries(example_test gtest gmock)
 target_link_libraries(example_test ${QT_LIBRARIES})
+
+
+#set (SRC src/example.cpp)
+set (SRC_H_MOC test/tst_tcpcommsocket.h)
+set (SRC_MOC_GEN "test/autogen")
+IF (NOT EXISTS ${SRC_MOC_GEN})
+   execute_process (COMMAND mkdir -p ${SRC_MOC_GEN})
+ENDIF()
+
+gen_moc (TEST_MOC
+        ${SRC_MOC_GEN}
+        ${SRC_H_MOC})
+add_executable(example_test_tcpcommtest test/tst_tcpcommsocket.cpp ${TEST_MOC})
+target_link_libraries(example_test_tcpcommtest gtest_main)
+target_link_libraries(example_test_tcpcommtest gtest gmock)
+target_link_libraries(example_test_tcpcommtest ${QT_LIBRARIES})
 
 add_test(NAME example_test COMMAND example)
 

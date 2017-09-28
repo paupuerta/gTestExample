@@ -3,7 +3,7 @@
 //#include <QSignalSpy>
 
 //#include "gmock/gmock.h"
-#include "example.h"
+#include "TeaBreak.h"
 
 // Return minutes taken to make the drinks
     int TeaBreak::morningTea()
